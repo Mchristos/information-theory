@@ -1,6 +1,6 @@
-# information-theory
+# Information Theory 
 
-A python library for information theoretical tools
+A python library for information-theoretic tools based on NumPy
 
 Includes computation of 
 
