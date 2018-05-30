@@ -38,8 +38,7 @@ def I(Pxy):
 
 def I2(p_x, P_yx):
     """
-    Compute the mutual information between two random variables given the 
-    conditional distribution p(y|x) and p(x)
+    Compute the mutual information between two random variables given the conditional distribution p(y|x) and p(x)
     
     p_x :  defines distribution p(x), shape (dim_X,) 
     P_yx : matrix defining p(y|x), shape (dim_Y, dim_X)  

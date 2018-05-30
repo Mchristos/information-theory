@@ -23,22 +23,22 @@ class Examples(object):
         """Computing mutual information associated with a joint distribution"""
         eps = 1e-12
         # define joint distribution p(x,y)
-        P_xy = np.array([
+        Pxy = np.array([
             [1/8,  1/16, 1/32, 1/32],
             [1/16, 1/8,  1/32, 1/32],
             [1/16, 1/16, 1/16, 1/16],
             [1/4,  eps,    eps,    eps ]
         ])
         print("joint distribution in form (y, x)")
-        print(P_xy)
+        print(Pxy)
         # apriori distribution p(x) 
-        p_x = np.sum(P_xy, axis = 0)
+        p_x = np.sum(Pxy, axis = 0)
         # conditional distribution p(y|x)
-        P_YX = P_xy / p_x
+        P_yx = Pxy / p_x
         print("mutual information using joint distribution: ")
-        print("I = %r" % I(P_xy))
+        print("I = %r" % I(Pxy))
         print("mutual information using conditional distribution: ")
-        print("I = %r" % I2(p_x, P_YX))
+        print("I = %r" % I2(p_x, P_yx))
 
 
 if __name__ == '__main__':
