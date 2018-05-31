@@ -7,9 +7,9 @@ def H(p_x):
     """
     return -np.sum(p_x*log2(p_x))
 
-def H_cond(p_x, P_yx):
+def H_cond(P_yx, p_x):
     """ 
-    Compute the conditional entropy H(Y|X) given distributions p(x) and p(y|x)
+    Compute the conditional entropy H(Y|X) given distributions p(y|x) and p(x)
     """
     return -np.sum((P_yx*log2(P_yx))@p_x)
 
@@ -36,15 +36,16 @@ def I(Pxy):
     p_y = np.sum(Pxy, axis = 1)
     return KL_div(Pxy, product(p_x, p_y))
 
-def I2(p_x, P_yx):
+def I2(P_yx, p_x):
     """
     Compute the mutual information between two random variables given the conditional distribution p(y|x) and p(x)
     
-    p_x :  defines distribution p(x), shape (dim_X,) 
     P_yx : matrix defining p(y|x), shape (dim_Y, dim_X)  
+    p_x :  defines distribution p(x), shape (dim_X,) 
     """
-    return np.sum((P_yx*log2(P_yx/(P_yx@p_x)))@p_x)
-
+    p_y = (P_yx@p_x).reshape(-1,1)
+    Pxy = P_yx/p_y
+    return np.sum( (P_yx*log2(Pxy)) @ p_x )
 
 def product(p_x, p_y):
     """
