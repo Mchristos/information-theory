@@ -57,3 +57,34 @@ def product(p_x, p_y):
     Pxy = p_y@p_x
     assert Pxy.shape == (p_y.shape[0], p_x.shape[1]) 
     return Pxy
+
+def blahut_arimoto(P_yx, iters):
+    """ 
+    Compute the channel capacity C of a channel p(y|x) using the Blahut-Arimoto algorithm. To do this, finds the input distribution p(x) that maximises the mutual information I(X;Y) determined by p(y|x) and p(x).
+
+    P_yx : defines the channel p(y|x)
+    iters : number of iterations
+    """
+
+    # initialize input dist randomly 
+    q_x = _rand_dist((P_yx.shape[1],))
+    for i in range(iters):
+        # update PHI
+        PHI_yx = (P_yx*q_x.reshape(1,-1))/(P_yx @ q_x).reshape(-1,1)
+        r_x = np.exp(np.sum(P_yx*log2(PHI_yx), axis=0))
+        C = log2(np.sum(r_x))
+        # update q 
+        q_x = _normalize(r_x)
+    return C 
+
+def _rand_dist(shape):
+    """ define a random probability distribution """
+    P = np.random.rand(*shape)
+    return _normalize(P)
+
+def _normalize(P):
+    """ normalize probability distribution """
+    s = sum(P)
+    if s == 0.:
+        raise ValueError("input distribution has sum zero")
+    return P / s
