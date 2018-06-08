@@ -7,4 +7,5 @@ Includes computation of
 - Entropy of random variable 
 - Conditional entropy 
 - Kullback–Leibler divergence (KL-divergence)
-- Mutual information 
+- Mutual information
+- Blahut-Arimoto algorithm for computing channel capacity
