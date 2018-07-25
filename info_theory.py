@@ -1,7 +1,7 @@
 import numpy as np 
 from numpy import log2
 
-eps = 1e-20
+eps = 1e-40
 
 def H(p_x):
     """
@@ -60,7 +60,7 @@ def product(p_x, p_y):
     assert Pxy.shape == (p_y.shape[0], p_x.shape[1]) 
     return Pxy
 
-def blahut_arimoto(P_yx, iters, deterministic = False):
+def blahut_arimoto(P_yx, epsilon = 0.001, deterministic = False):
     """ 
     Compute the channel capacity C of a channel p(y|x) using the Blahut-Arimoto algorithm. To do this, finds the input distribution p(x) that maximises the mutual information I(X;Y) determined by p(y|x) and p(x).
 
@@ -71,13 +71,17 @@ def blahut_arimoto(P_yx, iters, deterministic = False):
     if not deterministic:
         # initialize input dist randomly 
         q_x = _rand_dist((P_yx.shape[1],))
-        for i in range(iters):
+        T = 1
+        while T > epsilon:
             # update PHI
             PHI_yx = (P_yx*q_x.reshape(1,-1))/(P_yx @ q_x).reshape(-1,1)
             r_x = np.exp(np.sum(P_yx*log2(PHI_yx), axis=0))
+            # channel capactiy 
             C = log2(np.sum(r_x))
-            # update q 
-            q_x = _normalize(r_x)
+            # check convergence 
+            T = np.max(log2(r_x/q_x)) - C
+            # update q
+            q_x = _normalize(r_x + eps)
         return C
     else:
         # assume all columns in channel matrix are peaked on a single state
