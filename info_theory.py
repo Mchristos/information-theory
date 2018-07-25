@@ -58,24 +58,28 @@ def product(p_x, p_y):
     assert Pxy.shape == (p_y.shape[0], p_x.shape[1]) 
     return Pxy
 
-def blahut_arimoto(P_yx, iters):
+def blahut_arimoto(P_yx, iters, deterministic = False):
     """ 
     Compute the channel capacity C of a channel p(y|x) using the Blahut-Arimoto algorithm. To do this, finds the input distribution p(x) that maximises the mutual information I(X;Y) determined by p(y|x) and p(x).
 
     P_yx : defines the channel p(y|x)
     iters : number of iterations
     """
-
-    # initialize input dist randomly 
-    q_x = _rand_dist((P_yx.shape[1],))
-    for i in range(iters):
-        # update PHI
-        PHI_yx = (P_yx*q_x.reshape(1,-1))/(P_yx @ q_x).reshape(-1,1)
-        r_x = np.exp(np.sum(P_yx*log2(PHI_yx), axis=0))
-        C = log2(np.sum(r_x))
-        # update q 
-        q_x = _normalize(r_x)
-    return C 
+    if not deterministic:
+        # initialize input dist randomly 
+        q_x = _rand_dist((P_yx.shape[1],))
+        for i in range(iters):
+            # update PHI
+            PHI_yx = (P_yx*q_x.reshape(1,-1))/(P_yx @ q_x).reshape(-1,1)
+            r_x = np.exp(np.sum(P_yx*log2(PHI_yx), axis=0))
+            C = log2(np.sum(r_x))
+            # update q 
+            q_x = _normalize(r_x)
+        return C
+    else:
+        # assume all columns in channel matrix are peaked on a single state
+        # log of number of reachable states
+        return log2(np.sum(P_yx.sum(axis=1) > 0.999))
 
 def _rand_dist(shape):
     """ define a random probability distribution """
