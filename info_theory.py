@@ -1,6 +1,8 @@
 import numpy as np 
 from numpy import log2
 
+eps = 1e-20
+
 def H(p_x):
     """
     Compute the entropy of a random variable distributed ~ p(x)
@@ -65,6 +67,7 @@ def blahut_arimoto(P_yx, iters, deterministic = False):
     P_yx : defines the channel p(y|x)
     iters : number of iterations
     """
+    P_yx = P_yx + eps
     if not deterministic:
         # initialize input dist randomly 
         q_x = _rand_dist((P_yx.shape[1],))
